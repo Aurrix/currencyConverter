@@ -1,0 +1,13 @@
+updateRateMinutes: 1
+baseCurrency: EUR
+defaultChargePercent: 0.01
+defaultRate: 1
+api:
+ exchanges:
+  -
+   listRatesUri: "https://api.exchangeratesapi.io/latest"
+  -
+   listRatesUri: "https://api.ratesapi.io/api/latest"
+spring:
+  jpa:
+    open-in-view: false

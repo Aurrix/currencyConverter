@@ -1,0 +1,12 @@
+INSERT INTO commissions (id,currency_pair,commission) values (1,'USD/EUR',0.05);
+INSERT INTO commissions (id,currency_pair,commission) values (2,'EUR/CZK',0.02);
+INSERT INTO commissions (id,currency_pair,commission) values (3,'EUR/ZAR',0.015);
+INSERT INTO commissions (id,currency_pair,commission) values (4,'EUR/NOK',0.1);
+INSERT INTO commissions (id,currency_pair,commission) values (5,'EUR/NZD',0.03);
+INSERT INTO commissions (id,currency_pair,commission) values (6,'EUR/MXN',0.14);
+INSERT INTO commissions (id,currency_pair,commission) values (7,'EUR/ILS',0.0034);
+INSERT INTO commissions (id,currency_pair,commission) values (8,'EUR/GBP',0.0022);
+INSERT INTO commissions (id,currency_pair,commission) values (9,'EUR/RUB',0.04);
+INSERT INTO commissions (id,currency_pair,commission) values (10,'EUR/KRW',0.042);
+INSERT INTO commissions (id,currency_pair,commission) values (11,'EUR/MYR',0.07);
+INSERT INTO commissions (id,currency_pair,commission) values (12,'EUR/SEK',0.0556);
