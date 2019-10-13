@@ -15,7 +15,7 @@ public class CurrencyConvertServiceImpl implements CurrencyConvertService {
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${baseCurrency}")
-  private String baseCurrency;
+  public String baseCurrency;
   @Value("${defaultRate}")
   private BigDecimal defaultRate;
   private final Set<Rate> rates;
@@ -38,7 +38,7 @@ public class CurrencyConvertServiceImpl implements CurrencyConvertService {
     return convertTo.divide(rate,3,RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getCurrencyRate(Currency from, Currency to) {
+  public BigDecimal getCurrencyRate(Currency from, Currency to) {
     if (from.getCurrencyCode().equals(baseCurrency)) {
       logger.info("Trigger from / base");
       return getRateOfCurrency(to).getRate();
@@ -50,9 +50,9 @@ public class CurrencyConvertServiceImpl implements CurrencyConvertService {
     }
     else{
       logger.info("Trigger nor from / to");
-      return getRateOfCurrency(from)
+      return getRateOfCurrency(to)
           .getRate()
-          .divide(getRateOfCurrency(to).getRate(), RoundingMode.HALF_UP);
+          .divide(getRateOfCurrency(from).getRate(), RoundingMode.HALF_UP);
     }
   }
 

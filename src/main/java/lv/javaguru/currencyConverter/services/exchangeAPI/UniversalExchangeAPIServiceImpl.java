@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.util.Currency;
 import java.util.LinkedHashSet;
@@ -21,28 +22,32 @@ public class UniversalExchangeAPIServiceImpl implements ExternalExchangeAPIServi
 
   private final ExchangeAPIStatusScanner basicExchangeAPIStatusScanner;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final RestTemplate exchangeAPIRequest;
 
   public UniversalExchangeAPIServiceImpl(
-      ExchangeAPIStatusScanner basicExchangeAPIStatusScanner) {
+      ExchangeAPIStatusScanner basicExchangeAPIStatusScanner,
+      RestTemplate exchangeAPIRequest) {
     this.basicExchangeAPIStatusScanner = basicExchangeAPIStatusScanner;
+    this.exchangeAPIRequest = exchangeAPIRequest;
   }
 
   @Override
   public Set<Rate> getAllRates(Currency base) {
     Optional<URI> exchangeUrlOptional = Optional
         .ofNullable(basicExchangeAPIStatusScanner.returnWorkingAPI());
-    RestTemplate exchangeAPIRequest = new RestTemplate();
     if(exchangeUrlOptional.isPresent()){
       ResponseEntity<String> responseRates = exchangeAPIRequest.getForEntity(
           exchangeUrlOptional.get()+"?base="+base.getCurrencyCode(),String.class);
       ObjectMapper mapper = new ObjectMapper();
       try{
+        logger.info(responseRates.toString());
         JsonNode root = mapper.readTree(responseRates.getBody());
         JsonNode ratesNode = root.path("rates");
         Set<Rate> rates = new LinkedHashSet<>();
         ratesNode.fields().forEachRemaining(element ->{
         Currency cur = Currency.getInstance(element.getKey());
         BigDecimal rate = element.getValue().decimalValue();
+        rate.setScale(4, RoundingMode.HALF_UP);
         rates.add(new Rate(cur,rate));
         });
         return rates;

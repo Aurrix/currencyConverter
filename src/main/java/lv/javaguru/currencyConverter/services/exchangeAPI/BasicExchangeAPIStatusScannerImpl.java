@@ -7,6 +7,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import lv.javaguru.currencyConverter.config.exchange.ExchangeAPIProperties;
 import lv.javaguru.currencyConverter.config.exchange.ExchangeAPIsConfig;
+import lv.javaguru.currencyConverter.entities.ApplicationState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,23 @@ import org.springframework.stereotype.Service;
 public class BasicExchangeAPIStatusScannerImpl implements ExchangeAPIStatusScanner {
   private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
   private final ExchangeAPIsConfig exchangeAPIsConfig;
-
-  public BasicExchangeAPIStatusScannerImpl(ExchangeAPIsConfig exchangeAPIsConfig) {
+  private final ApplicationState applicationState;
+  public BasicExchangeAPIStatusScannerImpl(ExchangeAPIsConfig exchangeAPIsConfig,
+      ApplicationState applicationState) {
     this.exchangeAPIsConfig = exchangeAPIsConfig;
+
+    this.applicationState = applicationState;
   }
 
   @Override
   public URI returnWorkingAPI() {
+    applicationState.setConnecting(true);
     for (ExchangeAPIProperties apiProperties : exchangeAPIsConfig.getExchanges()) {
       try {
         HttpsURLConnection apiConnection =
             (HttpsURLConnection) new URL(apiProperties.listRatesUri).openConnection();
         apiConnection.connect();
+        applicationState.setConnecting(false);
         apiConnection.disconnect();
         return new URI(apiProperties.listRatesUri);
       } catch (IOException | URISyntaxException e) {

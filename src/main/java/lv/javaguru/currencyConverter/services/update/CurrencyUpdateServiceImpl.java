@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import lv.javaguru.currencyConverter.entities.ApplicationState;
 import lv.javaguru.currencyConverter.entities.Rate;
 import lv.javaguru.currencyConverter.services.exchangeAPI.ExternalExchangeAPIService;
 import org.slf4j.Logger;
@@ -25,28 +26,32 @@ public class CurrencyUpdateServiceImpl implements CurrencyUpdateService {
   private final ExternalExchangeAPIService externalExchangeAPIService;
 
   private boolean initiated;
-  private ScheduledExecutorService executorService;
+  private ApplicationState applicationState;
   private Thread updateThread;
 
 
   public CurrencyUpdateServiceImpl(Set<Rate> rates,
-      ExternalExchangeAPIService externalExchangeAPIService) {
+      ExternalExchangeAPIService externalExchangeAPIService,
+      ApplicationState applicationState) {
     this.rates = rates;
     this.externalExchangeAPIService = externalExchangeAPIService;
+    this.applicationState = applicationState;
   }
 
   @Override
   public void init() {
-    if (!initiated){
+    if (!initiated || applicationState.isConnecting()){
       initiated = true;
       updateThread = new Thread(()-> {
         rates.addAll(externalExchangeAPIService.getAllRates(Currency.getInstance(baseCurrency)));
         logger.info("Rates updated");
       });
-
-      executorService = Executors.newSingleThreadScheduledExecutor();
-      executorService.scheduleAtFixedRate(updateThread,0,updateRate, TimeUnit.MINUTES);
+      startExecutorService(updateThread, updateRate);
     }
     else logger.warn("Update service was already initiated!");
+  }
+  private void startExecutorService(Thread thread, int tick){
+    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    executorService.scheduleAtFixedRate(thread,0,tick, TimeUnit.MINUTES);
   }
 }

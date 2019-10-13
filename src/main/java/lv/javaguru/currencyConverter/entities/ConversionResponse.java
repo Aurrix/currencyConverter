@@ -1,7 +1,7 @@
 package lv.javaguru.currencyConverter.entities;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Currency;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,5 +29,5 @@ public class ConversionResponse {
   private BigDecimal commission;
   private BigDecimal amountCharged;
   private BigDecimal rate;
-  private LocalTime timeStamp;
+  private LocalDateTime timeStamp;
 }
