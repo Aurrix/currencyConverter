@@ -11,4 +11,14 @@ import lombok.Setter;
 public class Rate {
     private Currency currency;
     private BigDecimal rate;
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Rate) {
+      Rate rate = (Rate) obj;
+      return rate.getCurrency().getCurrencyCode().equals(this.getCurrency().getCurrencyCode())
+          && rate.getRate().equals(this.getRate());
+    }
+    return false;
+  }
 }

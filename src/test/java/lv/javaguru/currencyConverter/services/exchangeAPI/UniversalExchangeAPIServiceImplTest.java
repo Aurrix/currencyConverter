@@ -1,36 +1,32 @@
 package lv.javaguru.currencyConverter.services.exchangeAPI;
 
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Currency;
 import java.util.Set;
 import lv.javaguru.currencyConverter.entities.Rate;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 public class UniversalExchangeAPIServiceImplTest {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Mock
   private BasicExchangeAPIStatusScannerImpl basicExchangeAPIStatusScanner;
-  @MockBean
+  @Mock
   private RestTemplate exchangeAPIRequest;
 
   private UniversalExchangeAPIServiceImpl universalExchangeAPIService;
@@ -40,13 +36,12 @@ public class UniversalExchangeAPIServiceImplTest {
     universalExchangeAPIService = new UniversalExchangeAPIServiceImpl(
         basicExchangeAPIStatusScanner,
         exchangeAPIRequest);
-
   }
 
   @Test
   public void getAllRates() throws URISyntaxException {
     Mockito.when(basicExchangeAPIStatusScanner.returnWorkingAPI()).thenReturn(new URI("https://someapi.com"));
-    Mockito.when(exchangeAPIRequest.getForEntity(Mockito.any(),Mockito.any()))
+    Mockito.when(exchangeAPIRequest.getForEntity(Mockito.anyString(), Mockito.eq(String.class)))
         .thenReturn(
             new ResponseEntity<>(
                 "{\n"
@@ -91,14 +86,21 @@ public class UniversalExchangeAPIServiceImplTest {
 
     Set<Rate> rates = universalExchangeAPIService.getAllRates(Currency.getInstance("EUR"));
 
-    for (Rate rate:rates){logger.info("{} {}",rate.getCurrency().getCurrencyCode(),rate.getRate());}
-
     Rate MYR = new Rate(Currency.getInstance("MYR"), BigDecimal.valueOf(4.622));
     Rate SGD = new Rate(Currency.getInstance("SGD"), BigDecimal.valueOf(1.5177));
     Rate CZK = new Rate(Currency.getInstance("CZK"), BigDecimal.valueOf(25.807));
 
-    assertTrue(rates.contains(MYR));
-    assertTrue(rates.contains(SGD));
-    assertTrue(rates.contains(CZK));
+    Assert.assertEquals(MYR, getRateOfCurrency("MYR", rates));
+    Assert.assertEquals(SGD, getRateOfCurrency("SGD", rates));
+    Assert.assertEquals(CZK, getRateOfCurrency("CZK", rates));
+  }
+
+  private Rate getRateOfCurrency(String currency, Set<Rate> rates) {
+    for (Rate rate : rates) {
+      if (rate.getCurrency().getCurrencyCode().equals(currency)) {
+        return rate;
+      }
+    }
+    return null;
   }
 }

@@ -3,6 +3,7 @@ package lv.javaguru.currencyConverter.services.covert;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
+import java.util.HashSet;
 import java.util.Set;
 import lv.javaguru.currencyConverter.entities.Rate;
 import org.junit.Assert;
@@ -15,12 +16,13 @@ public class CurrencyConvertServiceImplTest {
 
   @Before
   public void initClass(){
-    Set<Rate> rates =
-        Set.of(
-            new Rate(Currency.getInstance("USD"), new BigDecimal(1.55)),
-            new Rate(Currency.getInstance("MXN"), new BigDecimal(1.25)),
-            new Rate(Currency.getInstance("CZK"), new BigDecimal(0.24))
-            );
+    Set<Rate> rates = new HashSet<>();
+    rates.add(new Rate(Currency.getInstance("USD"), new BigDecimal(1.55)));
+    rates.add(new Rate(Currency.getInstance("MXN"), new BigDecimal(1.25)));
+    rates.add(new Rate(Currency.getInstance("CZK"), new BigDecimal(0.24)));
+
+
+
     victim = new CurrencyConvertServiceImpl(rates);
     victim.baseCurrency = "EUR";
   }

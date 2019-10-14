@@ -1,6 +1,7 @@
 package lv.javaguru.currencyConverter.services.comission;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Currency;
 import lv.javaguru.currencyConverter.dao.CommissionsRepository;
 import lv.javaguru.currencyConverter.dao.ConversionResponseRepository;
@@ -36,26 +37,27 @@ public class CommissionChargeServiceImplTest {
     commissions.setId(1L);
     commissions.setCurrencyPair("EUR/USD");
     commissions.setCommission(new BigDecimal(0.05));
-    Mockito.when(commissionsRepository.findByCurrencyPair(Mockito.any())).thenReturn(commissions);
+    Mockito.when(commissionsRepository.findByCurrencyPair(Mockito.anyString()))
+        .thenReturn(commissions);
     Currency from = Currency.getInstance("EUR");
     Currency to = Currency.getInstance("USD");
     BigDecimal amount = new BigDecimal(100);
-
     Mockito.when(currencyConvertService.convertFrom(Mockito.any(), Mockito.any(), Mockito.any()))
         .thenReturn(new BigDecimal(100));
-
     Mockito.when(currencyConvertService.convertTo(Mockito.any(), Mockito.any(), Mockito.any()))
         .thenReturn(new BigDecimal(200));
-
-    ConversionResponse isToResponse =
-        commissionChargeService.returnChargedAndConvertedAmount(from, to, amount, true);
-
-    ConversionResponse isFromResponse =
-        commissionChargeService.returnChargedAndConvertedAmount(from, to, amount, false);
-
-    Mockito.when(conversionResponseRepository.save(Mockito.any())).then(i->i.getArgument(0));
-
-    Assert.assertEquals(new BigDecimal(10), isToResponse.getAmountCharged());
-    Assert.assertEquals(new BigDecimal(5), isFromResponse.getAmountCharged());
+    Mockito.when(conversionResponseRepository.save(Mockito.any()))
+        .then(invocation -> invocation.getArgument(0));
+    ConversionResponse isToResponse = commissionChargeService
+        .returnChargedAndConvertedAmount(from, to, amount, true);
+    commissions.setCommission(new BigDecimal(0.1));
+    Mockito.when(commissionsRepository.findByCurrencyPair(Mockito.anyString()))
+        .thenReturn(commissions);
+    ConversionResponse isFromResponse = commissionChargeService
+        .returnChargedAndConvertedAmount(from, to, amount, false);
+    Assert.assertEquals(new BigDecimal(5.00).setScale(2, RoundingMode.HALF_UP),
+        isToResponse.getAmountCharged());
+    Assert.assertEquals(new BigDecimal(10.00).setScale(2, RoundingMode.HALF_UP),
+        isFromResponse.getAmountCharged());
   }
 }
