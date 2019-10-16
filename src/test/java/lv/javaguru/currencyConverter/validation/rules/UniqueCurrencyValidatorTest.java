@@ -1,6 +1,5 @@
 package lv.javaguru.currencyConverter.validation.rules;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import javax.validation.ConstraintValidatorContext;
 import lv.javaguru.currencyConverter.entities.ConversionRequest;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -30,13 +28,11 @@ public class UniqueCurrencyValidatorTest {
   UniqueCurrencyValidator victim = new UniqueCurrencyValidator();
 
   @Test
-  public void isValid()
-      throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-    Mockito.when(constraintAnnotation.first()).thenReturn("from");
-    Mockito.when(constraintAnnotation.second()).thenReturn("to");
-
+  public void isValid() {
     conversionRequest = new ConversionRequest("USD", "EUR", new BigDecimal(100), false);
-
     Assert.assertTrue(victim.isValid(conversionRequest, constraintValidatorContext));
+
+    conversionRequest = new ConversionRequest("EUR", "EUR", new BigDecimal(100), false);
+    Assert.assertFalse(victim.isValid(conversionRequest, constraintValidatorContext));
   }
 }
