@@ -41,7 +41,7 @@ public class CurrencyConverterController {
               Currency.getInstance(request.getTo()),
               request.getAmount(),
               false);
-      return new ResponseEntity<>(conversionResponse, HttpStatus.OK);
+      return new ResponseEntity<>(conversionResponse, HttpStatus.CREATED);
     } else {
       ConversionResponse conversionResponse =
           commissionChargeService.returnChargedAndConvertedAmount(
@@ -49,7 +49,7 @@ public class CurrencyConverterController {
               Currency.getInstance(request.getTo()),
               request.getAmount(),
               true);
-      return new ResponseEntity<>(conversionResponse, HttpStatus.OK);
+      return new ResponseEntity<>(conversionResponse, HttpStatus.CREATED);
     }
   }
 

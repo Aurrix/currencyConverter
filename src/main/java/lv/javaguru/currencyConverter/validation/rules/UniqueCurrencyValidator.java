@@ -22,8 +22,8 @@ public class UniqueCurrencyValidator implements ConstraintValidator<UniqueCurren
     Object fieldOne;
     Object fieldTwo;
     try {
-      fieldOne = BeanUtils.getProperty(value,firstCurrency);
-      fieldTwo = BeanUtils.getProperty(value,secondCurrency);
+      fieldOne = getFieldOfName(value, firstCurrency);
+      fieldTwo = getFieldOfName(value, secondCurrency);
       if(fieldOne.equals(fieldTwo)){
         return false;
       }
@@ -32,4 +32,10 @@ public class UniqueCurrencyValidator implements ConstraintValidator<UniqueCurren
     }
     return true;
   }
+
+  public Object getFieldOfName(Object value, String fieldName)
+      throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    return BeanUtils.getProperty(value, fieldName);
+  }
+
 }
