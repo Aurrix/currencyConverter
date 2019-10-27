@@ -1,13 +1,19 @@
-updateRateMinutes: 1
-baseCurrency: EUR
-defaultChargePercent: 0.01
-defaultRate: 1
+settings:
+  updateRate: 60000
+  baseCurrency: EUR
+  defaultCommission: 0.01
+  defaultRate: 1
 api:
- exchanges:
-  -
-   listRatesUri: "https://api.exchangeratesapi.io/latest"
-  -
-   listRatesUri: "https://api.ratesapi.io/api/latest"
+  exchanges:
+    - "https://api.exchangeratesapi.io/latest"
+    - "https://api.ratesapi.io/api/latest"
+  commissions:
+    - USD.EUR: 0.12
+    - CNY.EUR: 0.23
+    - RUB.EUR: 0.15
 spring:
   jpa:
     open-in-view: false
+logging:
+  level:
+    root: info
