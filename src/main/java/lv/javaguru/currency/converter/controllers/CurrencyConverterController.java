@@ -1,8 +1,10 @@
 package lv.javaguru.currency.converter.controllers;
 
+import javax.validation.Valid;
 import lv.javaguru.currency.converter.dao.CurrencyConverterDAO;
 import lv.javaguru.currency.converter.entities.ConversionRequest;
-import lv.javaguru.currency.converter.validation.ExchangesDownException;
+import lv.javaguru.currency.converter.entities.ConversionResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +23,8 @@ public class CurrencyConverterController {
   }
 
   @PostMapping
-  public ResponseEntity<?> convertAmount(@RequestBody ConversionRequest request)
-      throws ExchangesDownException {
-    return currencyConverterDAO.convert(request);
+  public ResponseEntity<ConversionResponse> convertAmount(
+      @RequestBody @Valid ConversionRequest request) {
+    return new ResponseEntity<>(currencyConverterDAO.convert(request), HttpStatus.CREATED);
   }
 }

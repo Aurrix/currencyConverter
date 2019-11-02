@@ -1,6 +1,8 @@
 package lv.javaguru.currency.converter.validation.rules;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 public class IsCurrencyValidatorTest {
@@ -8,7 +10,7 @@ public class IsCurrencyValidatorTest {
   @Test
   public void isValid() {
     IsCurrencyValidator victim = new IsCurrencyValidator();
-    Assert.assertTrue(victim.isValid("USD", null));
-    Assert.assertFalse(victim.isValid("US", null));
+    assertTrue(victim.isValid("USD", null));
+    assertFalse(victim.isValid("US", null));
   }
 }

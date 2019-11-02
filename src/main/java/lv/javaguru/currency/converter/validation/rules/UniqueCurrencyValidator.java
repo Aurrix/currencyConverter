@@ -6,9 +6,12 @@ import javax.validation.ConstraintValidatorContext;
 import lv.javaguru.currency.converter.entities.ConversionRequest;
 import lv.javaguru.currency.converter.validation.annotations.UniqueCurrencies;
 import org.apache.commons.beanutils.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UniqueCurrencyValidator implements ConstraintValidator<UniqueCurrencies, Object> {
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private String firstCurrency;
   private String secondCurrency;
 
@@ -34,7 +37,7 @@ public class UniqueCurrencyValidator implements ConstraintValidator<UniqueCurren
           return false;
         }
       } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-        e.printStackTrace();
+        logger.warn(e.getLocalizedMessage());
       }
     }
     return true;

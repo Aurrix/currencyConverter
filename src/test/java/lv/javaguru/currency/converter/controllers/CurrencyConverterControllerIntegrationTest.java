@@ -1,10 +1,12 @@
 package lv.javaguru.currency.converter.controllers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.math.BigDecimal;
 import lv.javaguru.currency.converter.CurrencyConverterApp;
 import lv.javaguru.currency.converter.entities.ConversionRequest;
 import lv.javaguru.currency.converter.entities.ConversionResponse;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +40,14 @@ public class CurrencyConverterControllerIntegrationTest {
         restTemplate.postForEntity(
             rootUrl() + "/convert", conversionRequest, ConversionResponse.class);
 
-    Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-    Assert.assertNotNull(responseEntity.getBody());
+    assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+    assertNotNull(responseEntity.getBody());
     ConversionResponse response = responseEntity.getBody();
-    Assert.assertNotNull(response.getAmountCharged());
-    Assert.assertNotNull(response.getAmountFrom());
-    Assert.assertNotNull(response.getAmountTo());
-    Assert.assertNotNull(response.getCommission());
-    Assert.assertNotNull(response.getRate());
+    assertNotNull(response.getAmountCharged());
+    assertNotNull(response.getAmountFrom());
+    assertNotNull(response.getAmountTo());
+    assertNotNull(response.getCommission());
+    assertNotNull(response.getRate());
   }
 
   @Test
@@ -56,13 +58,13 @@ public class CurrencyConverterControllerIntegrationTest {
         restTemplate.postForEntity(
             rootUrl() + "/convert", conversionRequest, ConversionResponse.class);
 
-    Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-    Assert.assertNotNull(responseEntity.getBody());
+    assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+    assertNotNull(responseEntity.getBody());
     ConversionResponse response = responseEntity.getBody();
-    Assert.assertNotNull(response.getAmountCharged());
-    Assert.assertNotNull(response.getAmountFrom());
-    Assert.assertNotNull(response.getAmountTo());
-    Assert.assertNotNull(response.getCommission());
-    Assert.assertNotNull(response.getRate());
+    assertNotNull(response.getAmountCharged());
+    assertNotNull(response.getAmountFrom());
+    assertNotNull(response.getAmountTo());
+    assertNotNull(response.getCommission());
+    assertNotNull(response.getRate());
   }
 }

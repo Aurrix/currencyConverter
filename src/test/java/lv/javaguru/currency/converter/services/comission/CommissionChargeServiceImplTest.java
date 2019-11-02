@@ -1,5 +1,10 @@
 package lv.javaguru.currency.converter.services.comission;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.when;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
@@ -9,12 +14,10 @@ import lv.javaguru.currency.converter.dao.repositories.ConversionResponseReposit
 import lv.javaguru.currency.converter.entities.Commissions;
 import lv.javaguru.currency.converter.entities.ConversionResponse;
 import lv.javaguru.currency.converter.services.covert.CurrencyConvertServiceImpl;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,27 +45,27 @@ public class CommissionChargeServiceImplTest {
     commissions.setId(1L);
     commissions.setCurrencyPair("EUR/USD");
     commissions.setCommission(new BigDecimal(0.05));
-    Mockito.when(commissionsRepository.findByCurrencyPair(Mockito.anyString()))
+    when(commissionsRepository.findByCurrencyPair(anyString()))
         .thenReturn(commissions);
     Currency from = Currency.getInstance("EUR");
     Currency to = Currency.getInstance("USD");
     BigDecimal amount = new BigDecimal(100);
-    Mockito.when(currencyConvertService.convertFrom(Mockito.any(), Mockito.any(), Mockito.any()))
+    when(currencyConvertService.convertFrom(any(), any(), any()))
         .thenReturn(new BigDecimal(100));
-    Mockito.when(currencyConvertService.convertTo(Mockito.any(), Mockito.any(), Mockito.any()))
+    when(currencyConvertService.convertTo(any(), any(), any()))
         .thenReturn(new BigDecimal(200));
-    Mockito.when(conversionResponseRepository.save(Mockito.any()))
+    when(conversionResponseRepository.save(any()))
         .then(invocation -> invocation.getArgument(0));
     ConversionResponse isToResponse =
-        commissionChargeService.returnChargedAndConvertedAmount(from, to, amount, true);
+        commissionChargeService.getResponse(from, to, amount, true);
     commissions.setCommission(new BigDecimal(0.1));
-    Mockito.when(commissionsRepository.findByCurrencyPair(Mockito.anyString()))
+    when(commissionsRepository.findByCurrencyPair(anyString()))
         .thenReturn(commissions);
     ConversionResponse isFromResponse =
-        commissionChargeService.returnChargedAndConvertedAmount(from, to, amount, false);
-    Assert.assertEquals(
+        commissionChargeService.getResponse(from, to, amount, false);
+    assertEquals(
         new BigDecimal(5.00).setScale(2, RoundingMode.HALF_EVEN), isToResponse.getAmountCharged());
-    Assert.assertEquals(
+    assertEquals(
         new BigDecimal(10.00).setScale(2, RoundingMode.HALF_EVEN),
         isFromResponse.getAmountCharged());
   }

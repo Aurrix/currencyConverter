@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Rates {
+public class RatesMap {
 
   @JsonProperty
   private Map<String, Double> rates;

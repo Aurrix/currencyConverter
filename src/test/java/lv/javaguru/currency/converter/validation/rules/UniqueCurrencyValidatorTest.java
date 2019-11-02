@@ -1,10 +1,12 @@
 package lv.javaguru.currency.converter.validation.rules;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
 import javax.validation.ConstraintValidatorContext;
 import lv.javaguru.currency.converter.entities.ConversionRequest;
 import lv.javaguru.currency.converter.validation.annotations.UniqueCurrencies;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,9 +32,9 @@ public class UniqueCurrencyValidatorTest {
   @Test
   public void isValid() {
     conversionRequest = new ConversionRequest("USD", "EUR", new BigDecimal(100), false);
-    Assert.assertTrue(victim.isValid(conversionRequest, constraintValidatorContext));
+    assertTrue(victim.isValid(conversionRequest, constraintValidatorContext));
 
     conversionRequest = new ConversionRequest("EUR", "EUR", new BigDecimal(100), false);
-    Assert.assertFalse(victim.isValid(conversionRequest, constraintValidatorContext));
+    assertFalse(victim.isValid(conversionRequest, constraintValidatorContext));
   }
 }

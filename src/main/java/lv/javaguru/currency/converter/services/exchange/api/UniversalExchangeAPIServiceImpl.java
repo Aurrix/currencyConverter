@@ -4,10 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Currency;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lv.javaguru.currency.converter.entities.Rate;
-import lv.javaguru.currency.converter.entities.Rates;
+import lv.javaguru.currency.converter.entities.RatesMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -32,20 +33,22 @@ public class UniversalExchangeAPIServiceImpl implements ExternalExchangeAPIServi
   @Override
   public Set<Rate> getAllRates(Currency base) {
     Optional<String> exchangeUrlOptional = basicExchangeAPIStatusScanner.returnWorkingAPI();
-    ResponseEntity<Rates> responseRates =
-        exchangeAPIRequest.getForEntity(
-            UriComponentsBuilder.fromHttpUrl(exchangeUrlOptional.get())
-                .queryParam("base", base.getCurrencyCode())
-                .build()
-                .toUriString(),
-            Rates.class);
-    Map<String, Double> newRates = responseRates.getBody().getRates();
-    this.rates.clear();
-    newRates.forEach(
-        (key, value) ->
-            this.rates.add(
-                new Rate(
-                    Currency.getInstance(key), BigDecimal.valueOf(value), LocalDateTime.now())));
+    exchangeUrlOptional.ifPresent(url -> {
+      ResponseEntity<RatesMap> responseRates =
+          exchangeAPIRequest.getForEntity(
+              UriComponentsBuilder.fromHttpUrl(url)
+                  .queryParam("base", base.getCurrencyCode())
+                  .build()
+                  .toUriString(),
+              RatesMap.class);
+      Map<String, Double> newRates = Objects.requireNonNull(responseRates.getBody()).getRates();
+      this.rates.clear();
+      newRates.forEach(
+          (key, value) ->
+              this.rates.add(
+                  new Rate(
+                      Currency.getInstance(key), BigDecimal.valueOf(value), LocalDateTime.now())));
+    });
     return this.rates;
   }
 }

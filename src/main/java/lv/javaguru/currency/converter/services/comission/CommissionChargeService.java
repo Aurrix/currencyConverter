@@ -6,6 +6,6 @@ import lv.javaguru.currency.converter.entities.ConversionResponse;
 
 public interface CommissionChargeService {
 
-  ConversionResponse returnChargedAndConvertedAmount(
+  ConversionResponse getResponse(
       Currency from, Currency to, BigDecimal amount, boolean isTo);
 }

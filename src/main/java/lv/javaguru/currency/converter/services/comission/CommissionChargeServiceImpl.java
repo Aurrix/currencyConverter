@@ -35,7 +35,7 @@ public class CommissionChargeServiceImpl implements CommissionChargeService {
   }
 
   @Override
-  public ConversionResponse returnChargedAndConvertedAmount(
+  public ConversionResponse getResponse(
       Currency from, Currency to, BigDecimal amount, boolean isTo) {
     ConversionResponse conversionResponse = new ConversionResponse();
     conversionResponse.setId(0L);
